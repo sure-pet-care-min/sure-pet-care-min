@@ -23,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # credentails, so they're not accidentally committed
-/src/credentials.ts
+src/credentials.ts
