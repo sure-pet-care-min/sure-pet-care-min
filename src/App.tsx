@@ -3,12 +3,10 @@ import { useState } from "react";
 import { authenticate, getInfo, getTimeline } from "./client/client";
 import { Pet, Photo, TimelineEntry, User } from "./client/types";
 import { getLocationDisplay } from "./client/helpers";
+import { deviceId, email, password } from "./credentials";
 
 // Based on - https://github.com/RMHonor/sure-pet-care
 // also for more complete reference https://github.com/benleb/surepy/blob/dev/surepy/client.py
-const email = "";
-const password = "";
-const deviceId = "site_test_device_id";
 
 type TestData = {
   photos: Photo[];
@@ -38,7 +36,7 @@ const testPetCare = async (
   }
 
   if (!authToken) {
-    console.log("no idea how this happened");
+    console.log("Error: no idea how this happened");
     setData(undefined);
     return;
   }
@@ -51,8 +49,6 @@ const testPetCare = async (
     return;
   }
 
-  console.log("GOT INFO", infoData);
-
   const { data: timelineData, error: timelineError } = await getTimeline(
     authToken
   );
@@ -62,8 +58,6 @@ const testPetCare = async (
     setData(undefined);
     return;
   }
-
-  console.log("GOT TIMELINE", timelineData);
 
   setData({
     photos: infoData.photos,
@@ -85,12 +79,17 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Welcome to the SurePet Care testing platform.</p>
+        <p>Welcome to my SurePet Care testing platform.</p>
         <button onClick={() => testPetCare(token, setToken, setData)}>
           Click to test fetching data
         </button>
         <button onClick={() => setData(undefined)}>Click to clear</button>
         {userPhoto && <img src={userPhoto} alt="user" />}
+        {data?.user && (
+          <p>
+            {data.user.first_name} {data.user.last_name} : Coding
+          </p>
+        )}
         {data &&
           data.pets.map((p) => (
             <div>

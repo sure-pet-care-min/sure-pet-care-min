@@ -71,7 +71,7 @@ export type CatFlapDevice = DeviceBase & {
   parent: DeviceBase;
   status: {
     locking: {
-      mode: number;
+      mode: number; // TODO - Enumify
     };
     version: {
       device: {
@@ -124,7 +124,7 @@ export type Household = HouseholdBase & {
     acceptor_user_id: string;
     owner: boolean;
     write: boolean;
-    status: number;
+    status: number; // TODO - Enumify
     user: {
       acceptor: BasicUserInfo;
       creator: BasicUserInfo;
@@ -191,11 +191,11 @@ export type Movement = EntityBase & {
   user_id: number;
   time: string;
   direction: Direction;
-  type: number;
+  type: number; // TODO - Enumify
 };
 
 export type TimelineEntry = EntityBase & {
-  type: number;
+  type: number; // TODO - Enumify
   data: string;
   households: HouseholdBase[];
   movements: Movement[];
