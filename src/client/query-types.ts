@@ -33,6 +33,7 @@ export type GeneralInfoResponse = InfoResponse<{
   pets: Pet[];
   photos: Photo[];
   tags: Tag[];
+  user: User;
 }>;
 
 export type TimelineResponse = InfoResponse<TimelineEntry[]>;
