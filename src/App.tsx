@@ -10,6 +10,10 @@ import {
 } from "./redux/authSlice";
 import { useInfoQuery, useLoginMutation } from "./client/api";
 
+const Avatar = (props: { src: string; alt: string }) => (
+  <img {...props} className="avatar" />
+);
+
 const App = () => {
   const dispatch = useAppDispatch();
 
@@ -69,7 +73,7 @@ const App = () => {
         {isLoggedIn && isInfoLoading && <p>Loading data</p>}
         {isLoggedIn && user && userPhoto && (
           <div>
-            <img src={userPhoto} alt="user" />
+            <Avatar src={userPhoto} alt="user" />
             <p>
               {user.first_name} {user.last_name} : Coding
             </p>
@@ -79,7 +83,7 @@ const App = () => {
           pets &&
           pets.map((pet) => (
             <div key={pet.id}>
-              <img src={pet.photo.location} alt={`${pet.name}`} />
+              <Avatar src={pet.photo.location} alt={`${pet.name}`} />
               <p>
                 {pet.name} : {getLocationDisplay(pet)}
               </p>
