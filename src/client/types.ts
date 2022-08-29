@@ -1,3 +1,6 @@
+// Based on - https://github.com/RMHonor/sure-pet-care
+// also for more complete reference https://github.com/benleb/surepy/blob/dev/surepy/client.py
+
 type EntityBase = {
   id: number;
   version: string;
@@ -141,7 +144,7 @@ export enum Gender {
 export enum Location {
   Unknown = 0,
   Inside = 1,
-  Outside = 1,
+  Outside = 2,
 }
 
 export type PetPosition = {

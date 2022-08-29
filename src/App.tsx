@@ -1,104 +1,91 @@
 import "./App.css";
-import { useState } from "react";
-import { authenticate, getInfo, getTimeline } from "./client/client";
-import { Pet, Photo, TimelineEntry, User } from "./client/types";
 import { getLocationDisplay } from "./client/helpers";
-import { deviceId, email, password } from "./credentials";
-
-// Based on - https://github.com/RMHonor/sure-pet-care
-// also for more complete reference https://github.com/benleb/surepy/blob/dev/surepy/client.py
-
-type TestData = {
-  photos: Photo[];
-  user: User;
-  pets: Pet[];
-  timeline: TimelineEntry[];
-};
-
-const testPetCare = async (
-  token: string | undefined,
-  setToken: (token: string) => void,
-  setData: (data: TestData | undefined) => void
-) => {
-  let authToken = token;
-
-  if (!token) {
-    const { data, error } = await authenticate(email, password, deviceId);
-
-    if (!data || error) {
-      console.log("Error authenticating", error);
-      setData(undefined);
-      return;
-    }
-
-    authToken = data.token;
-    setToken(authToken);
-  }
-
-  if (!authToken) {
-    console.log("Error: no idea how this happened");
-    setData(undefined);
-    return;
-  }
-
-  const { data: infoData, error: infoError } = await getInfo(authToken);
-
-  if (!infoData || infoError) {
-    console.log("Error getting info", infoError);
-    setData(undefined);
-    return;
-  }
-
-  const { data: timelineData, error: timelineError } = await getTimeline(
-    authToken
-  );
-
-  if (!timelineData || timelineError) {
-    console.log("Error getting timeline", timelineError);
-    setData(undefined);
-    return;
-  }
-
-  setData({
-    photos: infoData.photos,
-    user: infoData.user,
-    pets: infoData.pets,
-    timeline: timelineData,
-  });
-};
-
-const getPhoto = (data?: TestData, photoId?: number) =>
-  data?.photos.find((p) => p.id === photoId)?.location;
+import { useAppDispatch, useAppSelector } from "./redux/store";
+import {
+  clearAuth,
+  selectErrorLoggingIn,
+  selectIsLoggedIn,
+  setAuth,
+  setError,
+} from "./redux/authSlice";
+import { useInfoQuery, useLoginMutation } from "./client/api";
 
 const App = () => {
-  const [token, setToken] = useState<string>();
-  const [data, setData] = useState<TestData>();
+  const dispatch = useAppDispatch();
 
-  const userPhoto = getPhoto(data, data?.user.photo_id);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const errorLoggingIn = useAppSelector(selectErrorLoggingIn);
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+
+  const { data: infoData, isLoading: isInfoLoading } = useInfoQuery(undefined, {
+    skip: !isLoggedIn,
+  });
+
+  const handleLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const { email, password } = document.forms[0];
+    try {
+      const response = await login({
+        email_address: email.value,
+        password: password.value,
+      }).unwrap();
+      dispatch(setAuth(response.data!.token));
+    } catch {
+      dispatch(setError());
+    }
+  };
+
+  const handleLogout = () => {
+    dispatch(clearAuth());
+  };
+
+  const user = infoData?.data?.user;
+  const photos = infoData?.data?.photos;
+  const pets = infoData?.data?.pets;
+  const userPhoto = photos?.find((p) => p.id === user?.photo_id)?.location;
 
   return (
     <div className="App">
       <header className="App-header">
         <p>Welcome to my SurePet Care testing platform.</p>
-        <button onClick={() => testPetCare(token, setToken, setData)}>
-          Click to test fetching data
-        </button>
-        <button onClick={() => setData(undefined)}>Click to clear</button>
-        {userPhoto && <img src={userPhoto} alt="user" />}
-        {data?.user && (
-          <p>
-            {data.user.first_name} {data.user.last_name} : Coding
-          </p>
-        )}
-        {data &&
-          data.pets.map((p) => (
+        {!isLoggedIn && (
+          <form onSubmit={handleLoginSubmit}>
             <div>
-              <img src={p.photo.location} alt={`${p.name}`} />
+              <label>Email </label>
+              <input type="text" name="email" required />
+            </div>
+            <div>
+              <label>Password </label>
+              <input type="password" name="password" required />
+            </div>
+            <div>
+              <input type="submit" />
+            </div>
+          </form>
+        )}
+        {!isLoggedIn && isLoginLoading && <p>Logging in...</p>}
+        {errorLoggingIn && <p>There was an error logging in, try again...</p>}
+        {isLoggedIn && isInfoLoading && <p>Loading data</p>}
+        {isLoggedIn && user && userPhoto && (
+          <div>
+            <img src={userPhoto} alt="user" />
+            <p>
+              {user.first_name} {user.last_name} : Coding
+            </p>
+          </div>
+        )}
+        {isLoggedIn &&
+          pets &&
+          pets.map((pet) => (
+            <div key={pet.id}>
+              <img src={pet.photo.location} alt={`${pet.name}`} />
               <p>
-                {p.name} : {getLocationDisplay(p)}
+                {pet.name} : {getLocationDisplay(pet)}
               </p>
             </div>
           ))}
+        {isLoggedIn && <button onClick={handleLogout}>Log out</button>}
       </header>
     </div>
   );

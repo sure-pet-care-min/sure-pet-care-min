@@ -3,15 +3,15 @@ import {
   GeneralInfoResponse,
   LoginResponse,
   TimelineResponse,
-} from "../client/query-types";
-import { RootState } from "./store";
+} from "./query-types";
+import { RootState } from "../redux/store";
 
 export const surePetCareApi = createApi({
   reducerPath: "surePetCareApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://app.api.surehub.io/api",
     prepareHeaders(headers, { getState }) {
-      const token = (getState() as RootState).auth;
+      const token = (getState() as RootState).auth.token;
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
@@ -22,12 +22,12 @@ export const surePetCareApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<
       LoginResponse,
-      { email_address: string; password: string; device_id: string }
+      { email_address: string; password: string }
     >({
       query: (args) => ({
         url: "/auth/login",
         method: "POST",
-        body: JSON.stringify(args),
+        body: { ...args, device_id: "sure_petcare_minimum_web_app" },
       }),
     }),
     info: builder.query<GeneralInfoResponse, void>({
