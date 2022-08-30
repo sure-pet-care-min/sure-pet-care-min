@@ -6,10 +6,10 @@ const authItemId = "sure-pet-care-min/auth";
 export const localStorageMiddleware: Middleware = ({ getState }) => {
   return (next) => (action) => {
     const result = next(action);
-    const token = (getState() as RootState)?.auth.token;
+    const authState = (getState() as RootState)?.auth;
 
-    if (token) {
-      localStorage.setItem(authItemId, token);
+    if (authState) {
+      localStorage.setItem(authItemId, JSON.stringify(authState));
     } else {
       localStorage.removeItem(authItemId);
     }
@@ -19,8 +19,8 @@ export const localStorageMiddleware: Middleware = ({ getState }) => {
 };
 
 export const rehydrateStoreFromLocalStorage = () => {
-  const token = localStorage.getItem(authItemId);
-  if (token !== null) {
-    return { auth: { token } };
+  const authState = localStorage.getItem(authItemId);
+  if (authState !== null) {
+    return { auth: JSON.parse(authState) };
   }
 };

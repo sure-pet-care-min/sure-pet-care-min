@@ -22,12 +22,12 @@ export const surePetCareApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<
       LoginResponse,
-      { email_address: string; password: string }
+      { email_address: string; password: string; device_id: string }
     >({
       query: (args) => ({
         url: "/auth/login",
         method: "POST",
-        body: { ...args, device_id: "sure_petcare_minimum_web_app" },
+        body: args,
       }),
     }),
     info: builder.query<GeneralInfoResponse, void>({

@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Login } from "./components/login/Login";
+import React from "react";
 
 const Avatar = (props: { src: string; alt: string }) => (
   <AvatarBase
@@ -46,42 +47,27 @@ const App = () => {
     dispatch(clearAuth());
   };
 
-  const user = infoData?.data?.user;
-  const photos = infoData?.data?.photos;
   const pets = infoData?.data?.pets;
-  const userPhoto = photos?.find((p) => p.id === user?.photo_id)?.location;
   const timeline = timelineData?.data;
 
   return (
     <>
-      <Typography variant="h5">
-        Welcome to my (unofficial) Sure Petcare minimum website (alpha).
-      </Typography>
-      <Divider />
       {!isLoggedIn && <Login />}
 
       {errorLoggingIn && (
         <Typography>There was an error logging in, try again...</Typography>
       )}
       {isLoggedIn && loading && <Typography>Loading data...</Typography>}
-      {isLoggedIn && !loading && user && userPhoto && (
-        <>
-          <Avatar src={userPhoto} alt="user" />
-          <Typography variant="subtitle1">
-            {user.first_name} {user.last_name} : Coding
-          </Typography>
-        </>
-      )}
       {isLoggedIn &&
         !loading &&
         pets &&
         pets.map((pet) => (
-          <>
+          <React.Fragment key={pet.id}>
             <Avatar src={pet.photo.location} alt={`${pet.name}`} />
             <Typography variant="subtitle1">
               {pet.name} : {getLocationDisplay(pet)}
             </Typography>
-          </>
+          </React.Fragment>
         ))}
       {isLoggedIn && !loading && timeline && (
         <>

@@ -6,6 +6,7 @@ import {
   localStorageMiddleware,
   rehydrateStoreFromLocalStorage,
 } from "./localStorageMiddleware";
+import { authErrorMiddleware } from "./authErrorMiddleware";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(surePetCareApi.middleware)
+      .concat(authErrorMiddleware)
       .concat(localStorageMiddleware),
   preloadedState: rehydrateStoreFromLocalStorage(),
 });
