@@ -1,3 +1,9 @@
+# Description
+
+This is a small personal project to try and make a site that relays the information from your Sure Pet Care devices. The reason for this is because the app that Sure Pet Care released is unbearably slow, so I wanted to see if I could make a site that would fetch and display the information faster. It will probably evolve over time and get more features, or it'll stagnage as I get bored.
+
+You can find the deployed GitHub pages site [here](https://sure-pet-care-min.github.io/sure-pet-care-min/). Log in with your usual Sure Pet Care credentials. They are not stored or used beyond logging in, only the authorization token is stored in your browser.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
