@@ -64,17 +64,22 @@ export type HouseDevice = DeviceBase & {
   };
 };
 
+export enum LockedStatus {
+  Locked = 0,
+  Unlocked = 1,
+}
+
 export type CatFlapDevice = DeviceBase & {
   product_id: 6;
   control: {
     curfew: { enabled: boolean; lock_time: string; unlock_time: string }[];
-    locking: number;
+    locking: number; // TODO - Enumify
     fast_polling: boolean;
   };
   parent: DeviceBase;
   status: {
     locking: {
-      mode: number; // TODO - Enumify
+      mode: LockedStatus;
     };
     version: {
       device: {

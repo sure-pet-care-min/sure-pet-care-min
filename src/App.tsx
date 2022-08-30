@@ -1,4 +1,9 @@
-import { getDirectionDisplay, getLocationDisplay } from "./client/helpers";
+import {
+  getDirectionDisplay,
+  getLocationDisplay,
+  getLockedDisplay,
+  getNextLockOrUnlockTime,
+} from "./client/helpers";
 import { useAppDispatch, useAppSelector } from "./redux/store";
 import {
   clearAuth,
@@ -15,6 +20,7 @@ import {
 } from "@mui/material";
 import { Login } from "./components/login/Login";
 import React from "react";
+import { CatFlapDevice } from "./client/types";
 
 const Avatar = (props: { src: string; alt: string }) => (
   <AvatarBase
@@ -46,6 +52,9 @@ const App = () => {
     dispatch(clearAuth());
   };
 
+  const catFlap = infoData?.data?.devices.find(
+    (d) => d.product_id === 6
+  ) as CatFlapDevice;
   const pets = infoData?.data?.pets;
   const timeline = timelineData?.data;
 
@@ -53,6 +62,15 @@ const App = () => {
     <>
       {!isLoggedIn && <Login />}
       {isLoggedIn && loading && <Typography>Loading data...</Typography>}
+      {isLoggedIn && !loading && catFlap && (
+        <>
+          <Typography>
+            The cat flap is {getLockedDisplay(catFlap)} until{" "}
+            {getNextLockOrUnlockTime(catFlap)}
+          </Typography>
+          <Divider />
+        </>
+      )}
       {isLoggedIn &&
         !loading &&
         pets &&
@@ -60,7 +78,7 @@ const App = () => {
           <React.Fragment key={pet.id}>
             <Avatar src={pet.photo.location} alt={`${pet.name}`} />
             <Typography variant="subtitle1">
-              {pet.name} : {getLocationDisplay(pet)}
+              {pet.name} is {getLocationDisplay(pet)}
             </Typography>
           </React.Fragment>
         ))}
