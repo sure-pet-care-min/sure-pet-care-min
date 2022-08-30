@@ -4,17 +4,24 @@ import {
   Button,
   CircularProgress,
   FormControl,
+  FormHelperText,
   InputLabel,
   OutlinedInput,
   Typography,
 } from "@mui/material";
 import { useLoginMutation } from "../../client/api";
-import { selectDeviceId, setAuth, setError } from "../../redux/authSlice";
+import {
+  selectDeviceId,
+  selectErrorLoggingIn,
+  setAuth,
+  setError,
+} from "../../redux/authSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 
 export const Login = () => {
   const dispatch = useAppDispatch();
   const deviceId = useAppSelector(selectDeviceId);
+  const isError = useAppSelector(selectErrorLoggingIn);
   const [login, { isLoading }] = useLoginMutation();
 
   const handleLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -51,12 +58,21 @@ export const Login = () => {
         }}
       >
         <FormControl sx={{ width: "100%", marginTop: 2 }} disabled={isLoading}>
-          <InputLabel htmlFor="email">Email</InputLabel>
-          <OutlinedInput label="email" id="email" type="text" />
+          <InputLabel htmlFor="email" required>
+            Email
+          </InputLabel>
+          <OutlinedInput label="email" id="email" type="text" required />
         </FormControl>
         <FormControl sx={{ width: "100%", marginTop: 2 }} disabled={isLoading}>
-          <InputLabel htmlFor="password">Password</InputLabel>
-          <OutlinedInput label="password" id="password" type="password" />
+          <InputLabel htmlFor="password" required>
+            Password
+          </InputLabel>
+          <OutlinedInput
+            label="password"
+            id="password"
+            type="password"
+            required
+          />
         </FormControl>
         <Box sx={{ width: "100%", marginTop: 2, position: "relative" }}>
           <Button
@@ -65,7 +81,7 @@ export const Login = () => {
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? "‎" : "Log in"}
+            {isLoading ? "‎" : "Sign In"}
           </Button>
           {isLoading && (
             <CircularProgress
@@ -80,6 +96,11 @@ export const Login = () => {
             />
           )}
         </Box>
+        {isError && (
+          <FormHelperText sx={{ textAlign: "center" }} error={true}>
+            There was an error logging in
+          </FormHelperText>
+        )}
       </form>
     </>
   );

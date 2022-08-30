@@ -30,7 +30,6 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
-  const errorLoggingIn = useAppSelector(selectErrorLoggingIn);
 
   const { data: infoData, isLoading: isInfoLoading } = useInfoQuery(undefined, {
     skip: !isLoggedIn,
@@ -53,10 +52,6 @@ const App = () => {
   return (
     <>
       {!isLoggedIn && <Login />}
-
-      {errorLoggingIn && (
-        <Typography>There was an error logging in, try again...</Typography>
-      )}
       {isLoggedIn && loading && <Typography>Loading data...</Typography>}
       {isLoggedIn &&
         !loading &&
