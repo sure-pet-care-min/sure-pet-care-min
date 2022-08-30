@@ -2,6 +2,10 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { surePetCareApi } from "../client/api";
 import authReducer from "./authSlice";
+import {
+  localStorageMiddleware,
+  rehydrateStoreFromLocalStorage,
+} from "./localStorageMiddleware";
 
 export const store = configureStore({
   reducer: {
@@ -9,7 +13,10 @@ export const store = configureStore({
     auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(surePetCareApi.middleware),
+    getDefaultMiddleware()
+      .concat(surePetCareApi.middleware)
+      .concat(localStorageMiddleware),
+  preloadedState: rehydrateStoreFromLocalStorage(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
