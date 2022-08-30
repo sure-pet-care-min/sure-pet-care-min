@@ -9,6 +9,7 @@ import {
   setError,
 } from "./redux/authSlice";
 import { useInfoQuery, useLoginMutation, useTimelineQuery } from "./client/api";
+import { isDevelopment } from "./isDevelopment";
 
 const Avatar = (props: { src: string; alt: string }) => (
   <img {...props} className="avatar" />
@@ -128,7 +129,10 @@ const App = () => {
           </>
         )}
         <Divider />
-        <p>version {process.env.REACT_APP_VERSION}</p>
+        <p>
+          version {process.env.REACT_APP_VERSION}{" "}
+          {isDevelopment() ? "(dev)" : ""}
+        </p>
       </header>
     </div>
   );
