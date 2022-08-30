@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/sure-pet-care-min/static/css/main.6184ceda.css",
-    "main.js": "/sure-pet-care-min/static/js/main.2b566494.js",
+    "main.js": "/sure-pet-care-min/static/js/main.02ca0aec.js",
     "static/js/787.589e207b.chunk.js": "/sure-pet-care-min/static/js/787.589e207b.chunk.js",
     "index.html": "/sure-pet-care-min/index.html",
     "main.6184ceda.css.map": "/sure-pet-care-min/static/css/main.6184ceda.css.map",
-    "main.2b566494.js.map": "/sure-pet-care-min/static/js/main.2b566494.js.map",
+    "main.02ca0aec.js.map": "/sure-pet-care-min/static/js/main.02ca0aec.js.map",
     "787.589e207b.chunk.js.map": "/sure-pet-care-min/static/js/787.589e207b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6184ceda.css",
-    "static/js/main.2b566494.js"
+    "static/js/main.02ca0aec.js"
   ]
 }
