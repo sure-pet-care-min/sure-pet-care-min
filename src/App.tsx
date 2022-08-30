@@ -4,20 +4,16 @@ import {
   clearAuth,
   selectErrorLoggingIn,
   selectIsLoggedIn,
-  setAuth,
-  setError,
 } from "./redux/authSlice";
-import { useInfoQuery, useLoginMutation, useTimelineQuery } from "./client/api";
+import { useInfoQuery, useTimelineQuery } from "./client/api";
 import { isDevelopment } from "./isDevelopment";
 import {
   Avatar as AvatarBase,
   Divider as DividerBase,
   Button,
   Typography,
-  FormControl,
-  Input,
-  InputLabel,
 } from "@mui/material";
+import { Login } from "./components/login/Login";
 
 const Avatar = (props: { src: string; alt: string }) => (
   <AvatarBase
@@ -34,7 +30,6 @@ const App = () => {
 
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const errorLoggingIn = useAppSelector(selectErrorLoggingIn);
-  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
 
   const { data: infoData, isLoading: isInfoLoading } = useInfoQuery(undefined, {
     skip: !isLoggedIn,
@@ -46,21 +41,6 @@ const App = () => {
     }
   );
   const loading = isInfoLoading || isTimelineLoading;
-
-  const handleLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const { email, password } = document.forms[0];
-    try {
-      const response = await login({
-        email_address: email.value,
-        password: password.value,
-      }).unwrap();
-      dispatch(setAuth(response.data!.token));
-    } catch {
-      dispatch(setError());
-    }
-  };
 
   const handleLogout = () => {
     dispatch(clearAuth());
@@ -78,25 +58,8 @@ const App = () => {
         Welcome to my (unofficial) Sure Petcare minimum website (alpha).
       </Typography>
       <Divider />
-      {!isLoggedIn && (
-        <form
-          onSubmit={handleLoginSubmit}
-          style={{ display: "flex", flexDirection: "column" }}
-        >
-          <FormControl sx={{ margin: 2 }}>
-            <InputLabel htmlFor="email">Email</InputLabel>
-            <Input id="email" type="text" />
-          </FormControl>
-          <FormControl sx={{ margin: 2 }}>
-            <InputLabel htmlFor="password">Password</InputLabel>
-            <Input id="password" type="password" />
-          </FormControl>
-          <Button variant="contained" type="submit">
-            Log in
-          </Button>
-        </form>
-      )}
-      {!isLoggedIn && isLoginLoading && <Typography>Logging in...</Typography>}
+      {!isLoggedIn && <Login />}
+
       {errorLoggingIn && (
         <Typography>There was an error logging in, try again...</Typography>
       )}
