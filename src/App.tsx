@@ -3,13 +3,10 @@ import {
   getLocationDisplay,
   getLockedDisplay,
   getNextLockOrUnlockTime,
+  isInside,
 } from "./client/helpers";
 import { useAppDispatch, useAppSelector } from "./redux/store";
-import {
-  clearAuth,
-  selectErrorLoggingIn,
-  selectIsLoggedIn,
-} from "./redux/authSlice";
+import { clearAuth, selectIsLoggedIn } from "./redux/authSlice";
 import { useInfoQuery, useTimelineQuery } from "./client/api";
 import { isDevelopment } from "./isDevelopment";
 import {
@@ -17,10 +14,13 @@ import {
   Divider as DividerBase,
   Button,
   Typography,
+  Badge,
 } from "@mui/material";
 import { Login } from "./components/login/Login";
 import React from "react";
 import { CatFlapDevice } from "./client/types";
+import HomeOutlined from "@mui/icons-material/HomeOutlined";
+import ParkOutlined from "@mui/icons-material/ParkOutlined";
 
 const Avatar = (props: { src: string; alt: string }) => (
   <AvatarBase
@@ -76,9 +76,36 @@ const App = () => {
         pets &&
         pets.map((pet) => (
           <React.Fragment key={pet.id}>
-            <Avatar src={pet.photo.location} alt={`${pet.name}`} />
+            <Badge
+              overlap="circular"
+              badgeContent={
+                isInside(pet) ? (
+                  <HomeOutlined
+                    sx={{
+                      color: "white",
+                      background: "green",
+                      borderRadius: "50%",
+                    }}
+                  />
+                ) : (
+                  <ParkOutlined
+                    sx={{
+                      color: "white",
+                      background: "orange",
+                      borderRadius: "50%",
+                    }}
+                  />
+                )
+              }
+            >
+              <Avatar src={pet.photo.location} alt={`${pet.name}`} />
+            </Badge>
             <Typography variant="subtitle1">
-              {pet.name} is {getLocationDisplay(pet)}
+              {pet.name} is {getLocationDisplay(pet)} (since{" "}
+              {new Date(pet.position.since).toLocaleTimeString(undefined, {
+                timeStyle: "short",
+              })}
+              )
             </Typography>
           </React.Fragment>
         ))}

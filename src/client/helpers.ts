@@ -7,6 +7,8 @@ import {
   Pet,
 } from "./types";
 
+export const isInside = (pet: Pet) => pet.position.where === Location.Inside;
+
 export const getLocationDisplay = (pet: Pet) => {
   switch (pet.position.where) {
     case Location.Inside:
