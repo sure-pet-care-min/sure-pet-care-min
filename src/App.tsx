@@ -112,7 +112,7 @@ const App = () => {
           <>
             <Divider />
             {timeline.map((t) => (
-              <p>
+              <p key={t.id}>
                 {t.pets[0].name} {getDirectionDisplay(t.movements[0])} at{" "}
                 {new Date(t.created_at).toLocaleTimeString(undefined, {
                   timeStyle: "short",
@@ -127,6 +127,8 @@ const App = () => {
             <button onClick={handleLogout}>Log out</button>
           </>
         )}
+        <Divider />
+        <p>version {process.env.REACT_APP_VERSION}</p>
       </header>
     </div>
   );
