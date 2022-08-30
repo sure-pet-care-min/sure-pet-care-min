@@ -69,7 +69,7 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Welcome to my SurePet Care testing platform.</p>
+        <p>Welcome to my Sure Petcare minimum website (alpha).</p>
         <Divider />
         {!isLoggedIn && (
           <form onSubmit={handleLoginSubmit}>
