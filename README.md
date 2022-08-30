@@ -41,6 +41,24 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Deployment
+
+Run the following commands to manage the deployment of this app:
+
+### `npm run predeploy`
+
+Do not run this command directly, it is run by the `deploy` command below.
+
+### `npm run deploy`
+
+Running this will automatically increment a minor version number and then deploy this app, creating a commit in the process.
+
+By default this will create a commit with the new version number, and a new commit with "Updates" as the commit message. If you want to add a specific commit message you can do so with the following command:
+
+```
+npm run deploy -- -m "my specific commit message for this deployment"
+```
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
