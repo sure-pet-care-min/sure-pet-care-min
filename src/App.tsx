@@ -1,4 +1,3 @@
-import "./App.css";
 import { getDirectionDisplay, getLocationDisplay } from "./client/helpers";
 import { useAppDispatch, useAppSelector } from "./redux/store";
 import {
@@ -10,19 +9,25 @@ import {
 } from "./redux/authSlice";
 import { useInfoQuery, useLoginMutation, useTimelineQuery } from "./client/api";
 import { isDevelopment } from "./isDevelopment";
+import {
+  Avatar as AvatarBase,
+  Divider as DividerBase,
+  Button,
+  Typography,
+  FormControl,
+  Input,
+  InputLabel,
+} from "@mui/material";
 
 const Avatar = (props: { src: string; alt: string }) => (
-  <img {...props} className="avatar" />
-);
-
-const Divider = () => (
-  <hr
-    style={{
-      width: "calc(100% - 40px)",
-      borderTop: "1px solid #bbb",
-    }}
+  <AvatarBase
+    {...props}
+    sx={{ width: 100, height: 100, alignSelf: "center" }}
+    className="avatar"
   />
 );
+
+const Divider = () => <DividerBase sx={{ width: "80%", margin: 2 }} />;
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -68,73 +73,79 @@ const App = () => {
   const timeline = timelineData?.data;
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>Welcome to my Sure Petcare minimum website (alpha).</p>
-        <Divider />
-        {!isLoggedIn && (
-          <form onSubmit={handleLoginSubmit}>
-            <div>
-              <label>Email </label>
-              <input type="text" name="email" required />
-            </div>
-            <div>
-              <label>Password </label>
-              <input type="password" name="password" required />
-            </div>
-            <div>
-              <input type="submit" />
-            </div>
-          </form>
-        )}
-        {!isLoggedIn && isLoginLoading && <p>Logging in...</p>}
-        {errorLoggingIn && <p>There was an error logging in, try again...</p>}
-        {isLoggedIn && loading && <p>Loading data...</p>}
-        {isLoggedIn && !loading && user && userPhoto && (
-          <div>
-            <Avatar src={userPhoto} alt="user" />
-            <p>
-              {user.first_name} {user.last_name} : Coding
-            </p>
-          </div>
-        )}
-        {isLoggedIn &&
-          !loading &&
-          pets &&
-          pets.map((pet) => (
-            <div key={pet.id}>
-              <Avatar src={pet.photo.location} alt={`${pet.name}`} />
-              <p>
-                {pet.name} : {getLocationDisplay(pet)}
-              </p>
-            </div>
+    <>
+      <Typography variant="h5">
+        Welcome to my (unofficial) Sure Petcare minimum website (alpha).
+      </Typography>
+      <Divider />
+      {!isLoggedIn && (
+        <form
+          onSubmit={handleLoginSubmit}
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <FormControl sx={{ margin: 2 }}>
+            <InputLabel htmlFor="email">Email</InputLabel>
+            <Input id="email" type="text" />
+          </FormControl>
+          <FormControl sx={{ margin: 2 }}>
+            <InputLabel htmlFor="password">Password</InputLabel>
+            <Input id="password" type="password" />
+          </FormControl>
+          <Button variant="contained" type="submit">
+            Log in
+          </Button>
+        </form>
+      )}
+      {!isLoggedIn && isLoginLoading && <Typography>Logging in...</Typography>}
+      {errorLoggingIn && (
+        <Typography>There was an error logging in, try again...</Typography>
+      )}
+      {isLoggedIn && loading && <Typography>Loading data...</Typography>}
+      {isLoggedIn && !loading && user && userPhoto && (
+        <>
+          <Avatar src={userPhoto} alt="user" />
+          <Typography variant="subtitle1">
+            {user.first_name} {user.last_name} : Coding
+          </Typography>
+        </>
+      )}
+      {isLoggedIn &&
+        !loading &&
+        pets &&
+        pets.map((pet) => (
+          <>
+            <Avatar src={pet.photo.location} alt={`${pet.name}`} />
+            <Typography variant="subtitle1">
+              {pet.name} : {getLocationDisplay(pet)}
+            </Typography>
+          </>
+        ))}
+      {isLoggedIn && !loading && timeline && (
+        <>
+          <Divider />
+          {timeline.map((t) => (
+            <Typography key={t.id} sx={{ padding: 1 }}>
+              {t.pets[0].name} {getDirectionDisplay(t.movements[0])} at{" "}
+              {new Date(t.created_at).toLocaleTimeString(undefined, {
+                timeStyle: "short",
+              })}
+            </Typography>
           ))}
-        {isLoggedIn && !loading && timeline && (
-          <>
-            <Divider />
-            {timeline.map((t) => (
-              <p key={t.id}>
-                {t.pets[0].name} {getDirectionDisplay(t.movements[0])} at{" "}
-                {new Date(t.created_at).toLocaleTimeString(undefined, {
-                  timeStyle: "short",
-                })}
-              </p>
-            ))}
-          </>
-        )}
-        {isLoggedIn && !loading && (
-          <>
-            <Divider />
-            <button onClick={handleLogout}>Log out</button>
-          </>
-        )}
-        <Divider />
-        <p>
-          version {process.env.REACT_APP_VERSION}{" "}
-          {isDevelopment() ? "(dev)" : ""}
-        </p>
-      </header>
-    </div>
+        </>
+      )}
+      {isLoggedIn && !loading && (
+        <>
+          <Divider />
+          <Button variant="contained" onClick={handleLogout}>
+            Log out
+          </Button>
+        </>
+      )}
+      <Divider />
+      <Typography variant="caption">
+        version {process.env.REACT_APP_VERSION} {isDevelopment() ? "(dev)" : ""}
+      </Typography>
+    </>
   );
 };
 
